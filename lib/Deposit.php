@@ -11,10 +11,11 @@ class Deposit extends AbstractApiClient
      * Make a deposit request to Zotapay API.
      *
      * @param \Zotapay\DepositOrder $order
+     * @param bool                  $is_direct
      *
      * @return \Zotapay\DepositApiResponse
      */
-    public function request($order)
+    public function request($order, $is_direct = false)
     {
         // return directly mock response if available.
         $mockResponse = $this->getMockResponse();
@@ -24,9 +25,12 @@ class Deposit extends AbstractApiClient
             return $response;
         }
 
+        // setup api path
+        $apiPath = $is_direct ? '/deposit/request/direct' : '/deposit/request/';
+
         // setup url
         $url =  \Zotapay\Zotapay::getApiUrl() .
-                '/deposit/request/' .
+                $apiPath .
                 \Zotapay\Zotapay::getEndpoint();
 
         // setup data
