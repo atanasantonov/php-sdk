@@ -9,7 +9,7 @@ require 'config.php';
 // setup order
 $order = new \Zotapay\DepositOrder();
 
-$order->setMerchantOrderID('403');
+$order->setMerchantOrderID('404');
 $order->setMerchantOrderDesc('Test order description');
 $order->setOrderAmount('100.00');
 $order->setOrderCurrency('USD');
