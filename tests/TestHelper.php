@@ -35,12 +35,12 @@ trait TestHelper
         \Zotapay\Zotapay::setMerchantId('api_test_merchant_id');
         \Zotapay\Zotapay::setMerchantSecretKey('api_test_merchant_secret_key');
         \Zotapay\Zotapay::setEndpoint('api_test_endpoint');  // USD Sandbox environment
-        \Zotapay\Zotapay::setApiBase('https://api.zotapay-sandbox.com'); // Sandbox environment
+        \Zotapay\Zotapay::setApiBase('https://api.zotapay-stage.com'); // Sandbox environment
 
         if (!empty(getenv('API_INTEGRATION_TESTS'))) {
             \Zotapay\Zotapay::setMerchantId(getenv('API_MERCHANT_ID'));
             \Zotapay\Zotapay::setMerchantSecretKey(getenv('API_MERCHANT_SECRET_KEY'));
-            \Zotapay\Zotapay::setEndpoint('503364');  // USD Sandbox environment
+            \Zotapay\Zotapay::setEndpoint('404097');  // USD Sandbox environment
             return;
         }
 

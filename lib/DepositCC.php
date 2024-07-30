@@ -5,7 +5,7 @@ namespace Zotapay;
 /**
  * Class DepositCC.
  */
-class DepositCC extends AbstractApiClient
+class DepositCC extends Deposit
 {
     /**
      * Make a deposit request to Zotapay API with credit card integration.
@@ -14,8 +14,15 @@ class DepositCC extends AbstractApiClient
      *
      * @return \Zotapay\DepositCCApiResponse
      */
-    public function request($order)
-    {
+    public function request($order, $is_direct = true)
+    {   
+        Zotapay::getLogger()->info('merchantOrderID #{merchantOrderID} Deposit CC direct deposit request.', ['merchantOrderID' => $order->getMerchantOrderID()]);
+        $depositResponse = parent::request($order, true);
+        if ($depositResponse->getDepositUrl()===null) {
+            Zotapay::getLogger()->error('merchantOrderID #{merchantOrderID} Deposit CC getting url from first deposit request failed.', ['merchantOrderID' => $order->getMerchantOrderID()]);
+            return new \Zotapay\DepositCCApiResponse(false);
+        }
+        
         // return directly mock response if available.
         $mockResponse = $this->getMockResponse();
         if (!empty($mockResponse)) {
@@ -24,11 +31,6 @@ class DepositCC extends AbstractApiClient
             return $response;
         }
 
-        // setup url
-        $url =  \Zotapay\Zotapay::getApiUrl() .
-                '/deposit/request/' .
-                \Zotapay\Zotapay::getEndpoint();
-
         // setup data
         Zotapay::getLogger()->debug('merchantOrderID #{merchantOrderID} Deposit CC prepare post data.', ['merchantOrderID' => $order->getMerchantOrderID()]);
         $data = $this->prepare($order);
@@ -36,8 +38,8 @@ class DepositCC extends AbstractApiClient
 
         // make the request
         Zotapay::getLogger()->info('Deposit CC request.');
-        $request = $this->apiRequest->request('post', $url, $signed);
-
+        $request = $this->apiRequest->request('post', $depositResponse->getDepositUrl(), $signed);
+        
         // set the response
         Zotapay::getLogger()->debug('merchantOrderID #{merchantOrderID} Deposit CC response.', ['merchantOrderID' => $order->getMerchantOrderID()]);
         $response = new \Zotapay\DepositCCApiResponse($request);
@@ -54,27 +56,6 @@ class DepositCC extends AbstractApiClient
     private function prepare($order)
     {
         return [
-            'merchantOrderID'   => $order->getMerchantOrderID(),
-            'merchantOrderDesc' => $order->getMerchantOrderDesc(),
-            'orderAmount'       => $order->getOrderAmount(),
-            'orderCurrency'     => $order->getOrderCurrency(),
-            'customerEmail'     => $order->getCustomerEmail(),
-            'customerFirstName' => $order->getCustomerFirstName(),
-            'customerLastName'  => $order->getCustomerLastName(),
-            'customerAddress'   => $order->getCustomerAddress(),
-            'customerCountryCode' => $order->getCustomerCountryCode(),
-            'customerCity'      => $order->getCustomerCity(),
-            'customerState'     => $order->getCustomerState(),
-            'customerZipCode'   => $order->getCustomerZipCode(),
-            'customerPhone'     => $order->getCustomerPhone(),
-            'customerIP'        => $order->getCustomerIP(),
-            'customerBankCode'  => $order->getCustomerBankCode(),
-            'customerBankAccountNumber' => $order->getCustomerBankAccountNumber(),
-            'redirectUrl'       => $order->getRedirectUrl(),
-            'callbackUrl'       => $order->getCallbackUrl(),
-            'checkoutUrl'       => $order->getCheckoutUrl(),
-            'customParam'       => $order->getCustomParam(),
-            'language'          => $order->getLanguage(),
             'cardHolderName'    => $order->getCardHolderName(),
             'cardNumber'        => $order->getCardNumber(),
             'cardExpirationMonth' => $order->getCardExpirationMonth(),
@@ -92,17 +73,19 @@ class DepositCC extends AbstractApiClient
     private function sign($data)
     {
         $dataToSign = [
-            \Zotapay\Zotapay::getEndpoint(),
-            $data['merchantOrderID'],
-            $data['orderAmount'],
-            $data['customerEmail'],
+            $data['cardNumber'],
+            $data['cardHolderName'],
+            $data['cardExpirationYear'],
+            $data['cardExpirationMonth'],
+            $data['cardCvv'],
             \Zotapay\Zotapay::getMerchantSecretKey(),
         ];
 
         $stringToSign = implode($dataToSign);
 
-        $data['signature'] = hash('sha256', $stringToSign);
-
-        return $data;
+        return array(
+            'data'      => $data,
+            'signature' => hash('sha256', $stringToSign)
+        );
     }
 }

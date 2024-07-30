@@ -64,7 +64,6 @@ class ApiResponse
 
         $this->body = $httpClientRequest[0]; // response body
         $this->httpCode = $httpClientRequest[1]; // http response code
-
         $json = \json_decode($this->body, JSON_OBJECT_AS_ARRAY);
         if (\json_last_error() !== JSON_ERROR_NONE) {
             $this->json = false;

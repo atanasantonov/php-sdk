@@ -9,7 +9,7 @@ require 'config.php';
 // setup order
 $order = new \Zotapay\DepositOrder();
 
-$order->setMerchantOrderID('404');
+$order->setMerchantOrderID('418');
 $order->setMerchantOrderDesc('Test order description');
 $order->setOrderAmount('100.00');
 $order->setOrderCurrency('USD');
@@ -32,10 +32,10 @@ $order->setLanguage('EN');
 
 // Credit card data
 $order->setCardHolderName('TEST TEST');
-$order->setCardNumber('4222222222347466');
-$order->setCardExpirationMonth('01');
-$order->setCardExpirationYear('21');
-$order->setCardCvv('111');
+$order->setCardNumber('4222222222222222');
+$order->setCardExpirationMonth('12');
+$order->setCardExpirationYear('24');
+$order->setCardCvv('000');
 
 // request
 $operation = new \Zotapay\DepositCC();

@@ -26,12 +26,12 @@ class Deposit extends AbstractApiClient
         }
 
         // setup api path
-        $apiPath = $is_direct ? '/deposit/request/direct' : '/deposit/request/';
+        $apiPath = $is_direct ? '/deposit/request/direct/' : '/deposit/request/';
 
         // setup url
         $url =  \Zotapay\Zotapay::getApiUrl() .
                 $apiPath .
-                \Zotapay\Zotapay::getEndpoint();
+                \Zotapay\Zotapay::getEndpoint();   
 
         // setup data
         // @codingStandardsIgnoreStart
