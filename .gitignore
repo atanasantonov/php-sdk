@@ -1,4 +1,7 @@
-./vendor/**
+.phpunit.cache/*
+vendor/**
+composer.lock
 coverage.xml
 phpunit.xml
-zotapay-php-sdk-*.zip
+phpunit.xml.dist.bak
+Zota-php-sdk-*.zip

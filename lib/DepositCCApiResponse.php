@@ -1,13 +1,12 @@
 <?php
 
-namespace Zotapay;
+namespace Zota;
 
 /**
  * Class DepositCCApiResponse.
  */
 class DepositCCApiResponse extends ApiResponse
 {
-
     /**
      * Get the value of status field from reponse data.
      *

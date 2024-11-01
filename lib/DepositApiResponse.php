@@ -1,13 +1,12 @@
 <?php
 
-namespace Zotapay;
+namespace Zota;
 
 /**
  * Class DepositApiResponse.
  */
 class DepositApiResponse extends ApiResponse
 {
-
     /**
      * Get the value of depositUrl field from reponse data.
      *
